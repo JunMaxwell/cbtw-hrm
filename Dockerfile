@@ -1,22 +1,37 @@
-###### Build #####
-FROM node:12-slim AS node
-LABEL author="Harry Ho"
-WORKDIR /
+# This Dockerfile uses `serve` npm package to serve the static files with node process.
+# You can find the Dockerfile for nginx in the following link:
+# https://github.com/refinedev/dockerfiles/blob/main/vite/Dockerfile.nginx
+FROM refinedev/node:18 AS base
+
+FROM base as deps
+
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
+
+FROM base as builder
+
+ENV NODE_ENV production
+
+COPY --from=deps /app/refine/node_modules ./node_modules
+
 COPY . .
-RUN npm install
+
 RUN npm run build
 
+FROM base as runner
 
-###### Run #####
-FROM nginx:alpine
-LABEL author="Harry Ho"
-WORKDIR /var/cache/nginx
-COPY --from=node /build /usr/share/nginx/html
-COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
+ENV NODE_ENV production
 
+RUN npm install -g serve
 
-#########################################################
-## docker build . -t  rc-prd:2.0
-## docker run --publish 8080:80  --name rc2 vc-prd:2.0
+COPY --from=builder /app/refine/dist ./
 
+USER refine
 
+CMD ["serve"]

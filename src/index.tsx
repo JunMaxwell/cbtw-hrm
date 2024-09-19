@@ -1,24 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import * as serviceWorker from './serviceWorker';
-import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { routes } from './routes';
-import configureStore from "./store";
+import React from "react";
+import { createRoot } from "react-dom/client";
 
+import App from "./App";
 
+const container = document.getElementById("root") as HTMLElement;
+const root = createRoot(container);
 
-import './styles.scss';
-
-require("./favicon.ico");
-const store = configureStore();
-
-ReactDOM.render(
-  <Provider store={store}>
-
-         <Router>{routes}</Router>
-
-  </Provider>,
-  document.getElementById('root')
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );
-serviceWorker.unregister();
