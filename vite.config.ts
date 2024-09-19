@@ -1,24 +1,8 @@
 /// <reference types="vitest" />
-import { builtinModules } from 'node:module'
-import { resolve } from 'node:path'
-import { defineConfig } from 'vite'
-
-const external = [...builtinModules, ...builtinModules.map((m) => `node:${m}`)]
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.tsx'),
-      fileName: 'index',
-      formats: ['es'],
-    },
-    sourcemap: true,
-    rollupOptions: {
-      external,
-      output: {
-        inlineDynamicImports: true,
-      },
-      preserveSymlinks: true,
-    },
-  }
+  base: "/cbtw-hrm/",
+  plugins: [react()],
 })

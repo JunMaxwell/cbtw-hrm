@@ -34,4 +34,4 @@ COPY --from=builder /app/refine/dist ./
 
 USER refine
 
-CMD ["serve"]
+CMD ["npm", "run", "start"]
