@@ -1,6 +1,24 @@
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+/// <reference types="vitest" />
+import { builtinModules } from 'node:module'
+import { resolve } from 'node:path'
+import { defineConfig } from 'vite'
+
+const external = [...builtinModules, ...builtinModules.map((m) => `node:${m}`)]
 
 export default defineConfig({
-  plugins: [react()],
-});
+  build: {
+    lib: {
+      entry: resolve(__dirname, 'src/index.tsx'),
+      fileName: 'index',
+      formats: ['es'],
+    },
+    sourcemap: true,
+    rollupOptions: {
+      external,
+      output: {
+        inlineDynamicImports: true,
+      },
+      preserveSymlinks: true,
+    },
+  }
+})
