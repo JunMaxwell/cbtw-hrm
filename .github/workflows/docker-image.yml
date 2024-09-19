@@ -28,10 +28,10 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/cbtw-ui:latest
+        tags: ghcr.io/cbtw-ui:latest
     - name: Extract static content
       run: |
-        docker create --name temp-container ghcr.io/${{ github.repository_owner }}/cbtw-ui:latest
+        docker create --name temp-container ghcr.io/cbtw-ui:latest
         docker cp temp-container:/path/to/static/content ./static-content
         docker rm temp-container
     - name: Deploy to GitHub Pages
